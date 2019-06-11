@@ -1,0 +1,143 @@
+@mixin timer($duration, $size, $color, $border, $hover: running) {
+	.wrapper, .wrapper * {
+		box-sizing: border-box;
+	}
+
+	.wrapper {
+		width: $size;
+		height: $size;
+		position: relative;
+		background-color: white;
+		
+		.circle-backdrop {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background-color: #D8D8D8;
+			height: 300px;
+			width: 300px;
+			border-radius: 100%;
+		}
+	}
+
+	.wrapper .pie {
+		width: 50%;
+		height: 100%;
+		transform-origin: 100% 50%;
+		position: absolute;
+		background: $color;
+		border: #{$border};
+	}
+
+	.wrapper .spinner {
+		border-radius: 100% 0 0 100% / 50% 0 0 50%;
+		z-index: 200;
+		border-right: none;
+		animation: rota ($duration + s) linear infinite;
+	}
+
+	.wrapper:hover .spinner,
+	.wrapper:hover .filler,
+	.wrapper:hover .mask {
+		animation-play-state: $hover;
+	}
+
+	.wrapper .filler {
+		border-radius: 0 100% 100% 0 / 0 50% 50% 0;
+		left: 50%;
+		opacity: 0;
+		z-index: 100;
+		animation: opa ($duration + s) steps(1, end) infinite reverse;
+		border-left: none;
+	}
+
+	.wrapper .mask {
+		width: 50%;
+		height: 100%;
+		position: absolute;
+		background: inherit;
+		opacity: 1;
+		z-index: 300;
+		animation: opa ($duration + s) steps(1, end) infinite;
+		
+		border-radius: 300px 0 0 300px;
+		background-color: #D8D8D8;
+	}
+
+	@keyframes rota {
+		0% {
+			transform: rotate(0deg);
+		}
+
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes opa {
+		0% {
+			opacity: 1;
+		}
+
+		50%, 100% {
+			opacity: 0;
+		}
+	}
+}
+
+.step-indicator {
+	margin: 40px;
+
+	.outer-ring {
+		height: 300px;
+		width: 300px;
+		border-radius: 100%;
+		background-color: #D8D8D8;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: relative;
+
+		.step-indicator-status {
+			@include timer(5, 300px, #D8D8D8, "20px solid #002D53");
+			position: absolute;
+			height: 300px;
+			width: 300px;
+
+			@include ie-only {
+				display: none;
+			}
+		}
+
+		.inner-circle {
+			height: 275px;
+			width: 275px;
+			background-color: white;
+			border-radius: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			position: relative;
+			z-index: 999;
+
+			.step-info {
+				text-align: center;
+				position: relative;
+				z-index: 999;
+
+				.step-progress {
+					font-size: 24px;
+					text-transform: uppercase;
+					color: #002D53;
+				}
+
+				.total-steps {
+					font-size: 18px;
+					color: #E76E36;
+				}
+			}
+		}
+	}
+}
+
+@include timer(5, 300px, transparent, "20px solid #002D53");
